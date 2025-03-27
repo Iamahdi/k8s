@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api-gateway
+  name: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - image: api-gateway:latest
+        name: api-gateway
+        env:
+         - name: SPRING_PROFILES_ACTIVE
+           value: production-microservice
+         - name: spring.activemq.broker-url
+           value: tcp://fleetman-queue.default.svc.cluster.local:61616
+         - name: fleetman.position.queue
+           value: positionQueue
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: api-gateway
+  name: fleetman-api-gateway
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    name: http
+  selector:
+    app: api-gateway
+  type: ClusterIP
+

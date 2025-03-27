@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: simulator
+  name: simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simulator
+  template:
+    metadata:
+      labels:
+        app: simulator
+    spec:
+      containers:
+      - image: simulator:v2.0.0
+        name: simulator
+        env:
+         - name: SPRING_PROFILES_ACTIVE
+           value: production-microservice
+         - name: spring.activemq.broker-url
+           value: tcp://fleetman-queue.default.svc.cluster.local:61616
+         - name: fleetman.position.queue
+           value: positionQueue

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tracker
+  name: tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracker
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: tracker
+    spec:
+      containers:
+      - image: tracker:v2.0.0
+        name: tracker
+        env:
+         - name: SPRING_PROFILES_ACTIVE
+           value: production-microservice
+         - name: spring.activemq.broker-url
+           value: tcp://fleetman-queue.default.svc.cluster.local:61616
+         - name: fleetman.position.queue
+           value: positionQueue
+---           
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tracker
+  name: fleetman-position-tracker
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    name: http
+  selector:
+    app: tracker
+  type: ClusterIP
+

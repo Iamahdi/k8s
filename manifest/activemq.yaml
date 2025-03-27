@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: activemq-artemis
+  name:  activemq-artemis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: activemq-artemis
+  template:
+    metadata:
+      labels:
+        app: activemq-artemis
+    spec:
+      containers:
+      - image: dinifarb/activemq:5.17.3
+        name: activemq-artemis
+        ports:
+        - containerPort: 61616  # Default port for ActiveMQ
+        - containerPort: 8161   # Default port for the web console
+        env:
+        volumeMounts:
+        - name: activemq-data
+          mountPath: /var/lib/activemq/data
+        - name:  activemq-data
+          mountPath:  /opt/activemq/conf
+        - name:  activemq-data
+          mountPath:  /data/activemq
+        - name:  activemq-data
+          mountPath:  /var/log/activemq
+      volumes:
+      - name: activemq-data
+        emptyDir: {}
+       
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: activemq-artemis
+  name: fleetman-queue
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - port: 8161
+    protocol: TCP
+    targetPort: 8161
+    name: console
+  - port: 61616
+    protocol: TCP
+    targetPort: 61616
+    name: endpoint
+  selector:
+    app: activemq-artemis
+  type: NodePort

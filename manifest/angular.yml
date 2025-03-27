@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: angular
+  name: angular
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: angular
+  template:
+    metadata:
+      labels:
+        app: angular
+    spec:
+      containers:
+      - image: my-angular-app:latest
+        name: angular
+        env:
+         - name: SPRING_PROFILES_ACTIVE
+           value: production-microservice
+         - name: spring.activemq.broker-url
+           value: tcp://fleetman-queue.default.svc.cluster.local:61616
+         - name: fleetman.position.queue
+           value: positionQueue
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webapp
+  name: webapp
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: webapp
+  type: NodePort
+---
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+# name: ingress1
+#spec:
+# ingressClassName: nginx
+# rules:
+#  - host: example.com
+#    http:
+#     paths:
+#      - backend:
+#         service:
+#          name: webapp1
+#          port:
+#           number: 80
+#        path: /
+#        pathType: Exact
