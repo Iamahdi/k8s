@@ -15,7 +15,7 @@ spec:
         app: activemq-artemis
     spec:
       containers:
-      - image: dinifarb/activemq:5.17.3
+      - image: 192.168.67.133:80/fleetman/activemq:5.17.3
         name: activemq-artemis
         ports:
         - containerPort: 61616  # Default port for ActiveMQ
