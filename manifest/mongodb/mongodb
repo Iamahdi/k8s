@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mongodb-pvc
+  name: mongodbb-pvc
 spec:
   accessModes:
     - ReadWriteOnce
@@ -58,7 +58,7 @@ spec:
       volumes:
         - name: mongo-storage
           persistentVolumeClaim:
-            claimName: mongodb-pvc
+            claimName: mongodbb-pvc
 
 ---
 apiVersion: v1

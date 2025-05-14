@@ -1,11 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: simulator
   labels:
     app: simulator
-  name: simulator
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
   selector:
     matchLabels:
       app: simulator
@@ -15,12 +20,39 @@ spec:
         app: simulator
     spec:
       containers:
-      - image: simulator:v2.0.0
-        name: simulator
+      - name: simulator
+        image: 192.168.60.131/fleetman/position-simulator:latest
         env:
-         - name: SPRING_PROFILES_ACTIVE
-           value: production-microservice
-         - name: spring.activemq.broker-url
-           value: tcp://fleetman-queue.default.svc.cluster.local:61616
-         - name: fleetman.position.queue
-           value: positionQueue
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: simulator-config
+              key: SPRING_PROFILES_ACTIVE
+        - name: spring.activemq.broker-url
+          valueFrom:
+            configMapKeyRef:
+              name: simulator-config
+              key: spring.activemq.broker-url
+        - name: fleetman.position.queue
+          valueFrom:
+            configMapKeyRef:
+              name: simulator-config
+              key: fleetman.position.queue
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: simulator-config
+data:
+  SPRING_PROFILES_ACTIVE: production-microservice
+  spring.activemq.broker-url: tcp://fleetman-queue.default.svc.cluster.local:61616
+  fleetman.position.queue: positionQueue

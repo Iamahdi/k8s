@@ -15,7 +15,7 @@ spec:
         app: api-gateway
     spec:
       containers:
-      - image: api-gateway:latest
+      - image: 192.168.60.131/fleetman/api-gateway:latest
         name: api-gateway
         env:
          - name: SPRING_PROFILES_ACTIVE

@@ -1,60 +1,98 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: angular-config
+data:
+  SPRING_PROFILES_ACTIVE: production-microservice
+  spring.activemq.broker-url: tcp://fleetman-queue.default.svc.cluster.local:61616
+  fleetman.position.queue: positionQueue
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: angular
   name: angular
+  labels:
+    app: webapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: angular
+      app: webapp
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
-        app: angular
+        app: webapp
     spec:
       containers:
-      - image: my-angular-app:latest
-        name: angular
-        env:
-         - name: SPRING_PROFILES_ACTIVE
-           value: production-microservice
-         - name: spring.activemq.broker-url
-           value: tcp://fleetman-queue.default.svc.cluster.local:61616
-         - name: fleetman.position.queue
-           value: positionQueue
+        - name: angular
+          image: 192.168.60.131/fleetman/angular:latest
+          envFrom:
+            - configMapRef:
+                name: angular-config
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  name: webapp
   labels:
     app: webapp
-  name: webapp
 spec:
-  externalTrafficPolicy: Local
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 80
+  type: NodePort
   selector:
     app: webapp
-  type: NodePort
+  externalTrafficPolicy: Local
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
 ---
-#apiVersion: networking.k8s.io/v1
-#kind: Ingress
-#metadata:
-# name: ingress1
-#spec:
-# ingressClassName: nginx
-# rules:
-#  - host: example.com
-#    http:
-#     paths:
-#      - backend:
-#         service:
-#          name: webapp1
-#          port:
-#           number: 80
-#        path: /
-#        pathType: Exact
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress1
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: webapp
+                port:
+                  number: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: angular-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: angular
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+
