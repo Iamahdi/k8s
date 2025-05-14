@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: angular
-          image: 192.168.67.133/fleetman/angular:latest
+          image: 192.168.67.133:80/fleetman/angular:latest
           envFrom:
             - configMapRef:
                 name: angular-config
