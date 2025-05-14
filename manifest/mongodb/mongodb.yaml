@@ -59,7 +59,8 @@ spec:
         - name: mongo-storage
           persistentVolumeClaim:
             claimName: mongodb-pvc
-
+      imagePullSecrets:
+        - name: harbor-secret
 ---
 apiVersion: v1
 kind: Service
