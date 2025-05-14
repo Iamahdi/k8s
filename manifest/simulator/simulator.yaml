@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: simulator
-        image: 192.168.60.131/fleetman/position-simulator:latest
+        image: 192.168.67.133/fleetman/position-simulator:latest
         env:
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
@@ -45,7 +45,8 @@ spec:
           limits:
             cpu: "500m"
             memory: "256Mi"
-
+      imagePullSecrets:
+        - name: harbor-secret     
 ---
 
 apiVersion: v1
