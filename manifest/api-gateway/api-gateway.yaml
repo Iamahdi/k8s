@@ -24,9 +24,17 @@ spec:
           name: api-gateway
           ports:
             - containerPort: 8080
-          envFrom:
-            - configMapRef:
+          env:
+          - name: SPRING_PROFILES_ACTIVE
+            valueFrom:
+              configMapKeyRef:
                 name: api-gateway-config
+                key: SPRING_PROFILES_ACTIVE
+          - name: position-tracker-url
+            valueFrom:
+              configMapKeyRef:
+                name: api-gateway-config
+                key: position-tracker-url
           resources:
             requests:
               memory: "256Mi"
@@ -44,8 +52,6 @@ metadata:
   name: api-gateway-config
 data:
   SPRING_PROFILES_ACTIVE: production-microservice
-  spring.activemq.broker-url: tcp://fleetman-queue.default.svc.cluster.local:61616
-  fleetman.position.queue: positionQueue
   position-tracker-url: fleetman-position-tracker.default.svc.cluster.local:8080
 
 ---
