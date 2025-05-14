@@ -38,6 +38,11 @@ spec:
             configMapKeyRef:
               name: tracker-config
               key: fleetman.position.queue
+        - name: spring.data.mongodb.host
+          valueFrom:
+            configMapKeyRef:
+              name: tracker-config
+              key: spring.data.mongodb.host
         resources:
           requests:
             cpu: "100m"
@@ -46,8 +51,9 @@ spec:
             cpu: "500m"
             memory: "256Mi"
       imagePullSecrets:
-        - name: harbor-secret     
----           
+        - name: harbor-secret
+
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -73,3 +79,4 @@ data:
   SPRING_PROFILES_ACTIVE: production-microservice
   spring.activemq.broker-url: tcp://fleetman-queue.default.svc.cluster.local:61616
   fleetman.position.queue: positionQueue
+  spring.data.mongodb.host: fleetman-mongodb.default.svc.cluster.local
