@@ -20,36 +20,56 @@ spec:
         app: tracker
     spec:
       containers:
-      - name: tracker
-        image: 192.168.67.133:80/fleetman/position-tracker:latest
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          valueFrom:
-            configMapKeyRef:
-              name: tracker-config
-              key: SPRING_PROFILES_ACTIVE
-        - name: spring.activemq.broker-url
-          valueFrom:
-            configMapKeyRef:
-              name: tracker-config
-              key: spring.activemq.broker-url
-        - name: fleetman.position.queue
-          valueFrom:
-            configMapKeyRef:
-              name: tracker-config
-              key: fleetman.position.queue
-        - name: spring.data.mongodb.host
-          valueFrom:
-            configMapKeyRef:
-              name: tracker-config
-              key: spring.data.mongodb.host
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "256Mi"
+        - name: tracker
+          image: 192.168.67.133:80/fleetman/position-tracker:latest
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: tracker-config
+                  key: SPRING_PROFILES_ACTIVE
+            - name: spring.activemq.broker-url
+              valueFrom:
+                configMapKeyRef:
+                  name: tracker-config
+                  key: spring.activemq.broker-url
+            - name: fleetman.position.queue
+              valueFrom:
+                configMapKeyRef:
+                  name: tracker-config
+                  key: fleetman.position.queue
+            - name: spring.data.mongodb.host
+              valueFrom:
+                configMapKeyRef:
+                  name: tracker-config
+                  key: spring.data.mongodb.host
+            - name: spring.data.mongodb.port
+              valueFrom:
+                configMapKeyRef:
+                  name: tracker-config
+                  key: spring.data.mongodb.port
+            - name: spring.data.mongodb.username
+              valueFrom:
+                configMapKeyRef:
+                  name: tracker-config
+                  key: spring.data.mongodb.username
+            - name: spring.data.mongodb.password
+              valueFrom:
+                configMapKeyRef:
+                  name: tracker-config
+                  key: spring.data.mongodb.password
+            - name: spring.data.mongodb.database
+              valueFrom:
+                configMapKeyRef:
+                  name: tracker-config
+                  key: spring.data.mongodb.database
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
       imagePullSecrets:
         - name: harbor-secret
 
@@ -57,17 +77,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: fleetman-position-tracker
   labels:
     app: tracker
-  name: fleetman-position-tracker
 spec:
-  ports:
-  - port: 8080
-    protocol: TCP
-    targetPort: 8080
-    name: http
   selector:
     app: tracker
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: http
   type: ClusterIP
 
 ---
@@ -80,3 +100,7 @@ data:
   spring.activemq.broker-url: tcp://fleetman-queue.default.svc.cluster.local:61616
   fleetman.position.queue: positionQueue
   spring.data.mongodb.host: fleetman-mongodb.default.svc.cluster.local
+  spring.data.mongodb.port: "27017"
+  spring.data.mongodb.username: admin
+  spring.data.mongodb.password: password
+  spring.data.mongodb.database: fleetman
