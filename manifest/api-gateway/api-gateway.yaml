@@ -9,22 +9,54 @@ spec:
   selector:
     matchLabels:
       app: api-gateway
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
         app: api-gateway
     spec:
       containers:
-      - image: 192.168.60.131/fleetman/api-gateway:latest
-        name: api-gateway
-        env:
-         - name: SPRING_PROFILES_ACTIVE
-           value: production-microservice
-         - name: spring.activemq.broker-url
-           value: tcp://fleetman-queue.default.svc.cluster.local:61616
-         - name: fleetman.position.queue
-           value: positionQueue
-
+        - image: 192.168.67.133/fleetman/api-gateway:latest
+          name: api-gateway
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: api-gateway-config
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      imagePullSecrets:
+        - name: harbor-secret
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+data:
+  SPRING_PROFILES_ACTIVE: production-microservice
+  spring.activemq.broker-url: tcp://fleetman-queue.default.svc.cluster.local:61616
+  fleetman.position.queue: positionQueue
 ---
 apiVersion: v1
 kind: Service
@@ -34,11 +66,10 @@ metadata:
   name: fleetman-api-gateway
 spec:
   ports:
-  - port: 8080
-    protocol: TCP
-    targetPort: 8080
-    name: http
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+      name: http
   selector:
     app: api-gateway
   type: ClusterIP
-
