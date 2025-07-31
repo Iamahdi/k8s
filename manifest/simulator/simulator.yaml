@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: simulator
-        image: 192.168.67.133:80/fleetman/position-simulator:latest
+        image: reg.iranops.ir/fleetman/position-simulator:latest
         env:
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
