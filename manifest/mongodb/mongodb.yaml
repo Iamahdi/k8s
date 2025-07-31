@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
         - name: mongodb
-          image: 192.168.67.133:80/fleetman/mongo:4.4.18
+          image: reg.iranops.ir/fleetman/mongo:4.4.18
           ports:
             - containerPort: 27017
           volumeMounts:
