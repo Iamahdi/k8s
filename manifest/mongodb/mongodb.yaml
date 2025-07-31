@@ -45,6 +45,7 @@ spec:
       containers:
         - name: mongodb
           image: reg.iranops.ir/fleetman/mongo:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 27017
           volumeMounts:
