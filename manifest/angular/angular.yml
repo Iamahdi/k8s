@@ -32,6 +32,7 @@ spec:
       containers:
         - name: angular
           image: reg.iranops.ir/fleetman/angular:latest
+          imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
                 name: angular-config
