@@ -59,7 +59,7 @@ kind: Service
 metadata:
   labels:
     app: api-gateway
-  name: api-gateway
+  name: fleetman-api-gateway
 spec:
   ports:
     - port: 8080
