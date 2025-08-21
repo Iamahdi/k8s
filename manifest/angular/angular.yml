@@ -65,6 +65,9 @@ spec:
     - port: 80
       targetPort: 80
       protocol: TCP
+      nodePort: 30000  
+  externalIPs:
+    - 192.168.60.134
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
