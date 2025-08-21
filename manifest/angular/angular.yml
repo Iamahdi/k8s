@@ -66,16 +66,26 @@ spec:
       targetPort: 80
       protocol: TCP
 ---
-#apiVersion: networking.k8s.io/v1
-#kind: Ingress
-#metadata:
-#  name: ingress1
-#spec:
-#  ingressClassName: nginx
-#  rules:
-#    - host: example.com
-#      http:
-#        paths:
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress1
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: example.com
+      http:
+        paths:
+          # Route API requests to api-gateway
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: fleetman-api-gateway
+                port:
+                  number: 8080
+          
+          # Route all other requests to angular webapp
 #          - path: /
 #            pathType: Prefix
 #            backend:
