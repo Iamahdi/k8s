@@ -86,13 +86,13 @@ spec:
                   number: 8080
           
           # Route all other requests to angular webapp
-#          - path: /
-#            pathType: Prefix
-#            backend:
-#              service:
-#                name: webapp
-#                port:
-#                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: webapp
+                port:
+                  number: 80
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
