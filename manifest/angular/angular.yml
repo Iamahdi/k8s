@@ -80,7 +80,7 @@ spec:
       http:
         paths:
           # Route API requests to api-gateway
-          - path: /api
+          - path: /api/
             pathType: Prefix
             backend:
               service:
