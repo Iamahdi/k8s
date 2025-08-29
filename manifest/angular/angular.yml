@@ -81,8 +81,7 @@ spec:
     - host: example.com
       http:
         paths:
-          - path: /api(/|$)(.*)
-            pathType: ImplementationSpecific
+          - path: /api/
             backend:
               service:
                 name: fleetman-api-gateway
