@@ -5,8 +5,6 @@ metadata:
   name: angular-config
 data:
   SPRING_PROFILES_ACTIVE: production-microservice
-#  spring.activemq.broker-url: tcp://fleetman-queue.default.svc.cluster.local:61616
-#  fleetman.position.queue: positionQueue
 ---
 apiVersion: apps/v1
 kind: Deployment
