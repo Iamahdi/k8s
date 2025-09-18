@@ -20,7 +20,7 @@ spec:
         app: api-gateway
     spec:
       containers:
-        - image: reg.iranops.ir/fleetman/api-gateway:latest
+        - image: reg.iranops.ir/chesterwood/api-gateway:latest
           imagePullPolicy: IfNotPresent
           name: api-gateway
           env:
