@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: simulator
-        image: reg.iranops.ir/fleetman/position-simulator:latest
+        image: reg.iranops.ir/chesterwood/simulator:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: SPRING_PROFILES_ACTIVE
