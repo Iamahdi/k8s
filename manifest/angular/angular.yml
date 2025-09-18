@@ -37,13 +37,13 @@ spec:
                 configMapKeyRef:
                   name: angular-config
                   key: SPRING_PROFILES_ACTIVE
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
+#          resources:
+#            requests:
+#              cpu: "100m"
+#              memory: "128Mi"
+#            limits:
+#              cpu: "500m"
+#              memory: "512Mi"
       imagePullSecrets:
         - name: harbor-secret 
 
