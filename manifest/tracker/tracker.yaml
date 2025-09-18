@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: tracker
-          image: reg.iranops.ir/fleetman/position-tracker:latest
+          image: reg.iranops.ir/chesterwood/tracker:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: SPRING_PROFILES_ACTIVE
