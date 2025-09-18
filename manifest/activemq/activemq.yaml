@@ -15,7 +15,7 @@ spec:
         app: activemq-artemis
     spec:
       containers:
-      - image: reg.iranops.ir/fleetman/activemq:5.17.3
+      - image: reg.iranops.ir/chesterwood/queue
         imagePullPolicy: IfNotPresent
         name: activemq-artemis
         ports:
