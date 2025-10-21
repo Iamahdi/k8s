@@ -1,0 +1,57 @@
+variables:
+  IMAGE_PATH: reg.iranops.ir/monorepo
+  VERSION: v1.0.1
+
+stages:
+  - build
+  - deploy
+
+angular-build:
+  stage: build
+  tags:
+    - build
+  script:
+    - cd angular
+    - docker build -t ${IMAGE_PATH}/angular:${VERSION} .
+    - docker push ${IMAGE_PATH}/angular:${VERSION}
+
+
+api-gateway-build:
+  stage: build
+  tags:
+    - build
+  script:
+    - cd api-gateway
+    - docker build -t ${IMAGE_PATH}/api-gateway:${VERSION} .
+    - docker push ${IMAGE_PATH}/api-gateway:${VERSION}
+
+
+position-simulator-build:
+  stage: build
+  tags:
+    - build
+  script:
+    - cd position-simulator
+    - docker build -t ${IMAGE_PATH}/position-simulator:${VERSION} .
+    - docker push ${IMAGE_PATH}/position-simulator:${VERSION}
+
+
+position-tracker-build:
+  stage: build
+  tags:
+    - build
+  script:
+    - cd position-tracker
+    - docker build -t ${IMAGE_PATH}/position-tracker:${VERSION} .
+    - docker push ${IMAGE_PATH}/position-tracker:${VERSION}
+
+
+deploy:
+  stage: deploy
+  tags:
+    - kuber
+  image: bitnami/kubectl:latest
+  script:
+    - echo "$KUBECONFIG_DATA" | base64 -d > kubeconfig
+    - export KUBECONFIG=$(pwd)/kubeconfig
+    - kubectl apply -f applicationset_git.yml
