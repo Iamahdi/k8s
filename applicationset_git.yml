@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: git-generator
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/Iamahdi/k8s.git
+      revision: HEAD
+      directories:
+      - path: manifest/*
+  template:
+    metadata:
+      name: '{{path.basename}}-application'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/Iamahdi/k8s.git
+        targetRevision: HEAD
+        path: '{{path}}'
+        directory:
+         recurse: true
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      syncPolicy:
+        automated: {}
+        syncOptions:
